@@ -3,29 +3,32 @@ package Controller;
 import java.sql.*;
 import java.util.List;
 
-public class Counter {
+public class Statistic {
     private String maker;
-    private int quantity;
+    private int sold;
+    private int total;
 
-    private Counter(String maker, int quantity){
+    private Statistic(String maker, int sold, int total){
         this.maker = maker;
-        this.quantity = quantity;
+        this.sold = sold;
+        this.total = total;
     }
 
-    private List<Counter> counters;
+    private List<Statistic> statistic;
 
-    private List<Counter> setListCounter(ResultSet resultSet) throws SQLException {
+    private List<Statistic> setListStatistic(ResultSet resultSet) throws SQLException{
         while (resultSet.next()){
-            Counter thisMaker = new Counter(
+            Statistic thisStatistic = new Statistic(
                     resultSet.getString(1),
-                    resultSet.getInt(2)
+                    resultSet.getInt(2),
+                    resultSet.getInt(3)
             );
-            counters.add(thisMaker);
+            statistic.add(thisStatistic);
         }
-        return counters;
+        return statistic;
     }
 
-    public List<Counter> getCounterByMaker(){
+    public List<Statistic> getStatisticByMaker(){
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
         }catch (ClassNotFoundException e){
@@ -38,12 +41,11 @@ public class Counter {
         }
         try{
             Statement statement = connection.createStatement();
-            String sql = "SELECT maker, COUNT(maker) as quantity FROM store_cms_plusplus.laptop GROUP BY maker ORDER BY quantity DESC";
+            String sql = "SELECT maker, SUM(sold), SUM(price*sold) AS Total FROM store_cms_plusplus.laptop GROUP BY maker ORDER BY Total DESC";
             ResultSet resultSet = statement.executeQuery(sql);
         }catch (SQLException e){
             e.printStackTrace();
         }
-        return counters;
+        return statistic;
     }
-
 }
