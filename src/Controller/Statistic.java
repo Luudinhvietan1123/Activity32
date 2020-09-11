@@ -47,5 +47,6 @@ public class Statistic {
             e.printStackTrace();
         }
         return statistic;
+        //Copy code theo chiều dọc hay hình chữ nhật: Alt + trỏ chuột :>
     }
 }
